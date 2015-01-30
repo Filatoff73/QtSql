@@ -14,13 +14,13 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    table.cpp
+    table.cpp \
+    dialogmy.cpp
 
 HEADERS  += mainwindow.h \
-    table.h
+    table.h \
+    dialogmy.h
 
 FORMS    += mainwindow.ui
 QT       += sql
 QT       += core network sql
-LIBS     += "C:\Program Files\PostgreSQL\9.3\lib\libpq.dll"
-INCLUDEPATH += C:\Program Files\PostgreSQL\9.3\lib\

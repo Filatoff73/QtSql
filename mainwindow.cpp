@@ -12,26 +12,22 @@
 #include <QTextEdit>
 #include <QLabel>
 
+#include "dialogmy.h"
+
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
 
+         hostName = "localhost";
+         databaseName = "postgres";
+         userName = "postgres";
+         password = "381467";
 
-         db = QSqlDatabase::addDatabase("QPSQL");
-         db.setHostName("localhost");
-         db.setDatabaseName("postgres");
-         db.setUserName("postgres");
-         db.setPassword("381467");
-         bool ok = db.open();
-         qDebug() << ok<< endl;
-
-          query = new QSqlQueryModel;
+         query = new QSqlQueryModel;
          result = new QTableView;
          result->setModel(query);
          ui->horizontalLayout_2->addWidget(result);
          //ui->horizontalLayout_2->setDirection(QBoxLayout::RightToLeft);
-
-
 
          connect(ui->addTable, SIGNAL(clicked()), this, SLOT(AddTable()));
          connect(ui->pushButton, SIGNAL(clicked()), this, SLOT(SaveChanges()));
@@ -40,7 +36,36 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
          connect(ui->addRow, SIGNAL(clicked()), this, SLOT(AddRow()));
          connect(ui->rule, SIGNAL(clicked()), this, SLOT(SetRule()));
 
+         connect(ui->menuBar, SIGNAL(triggered(QAction*)), this, SLOT(MenuBarFunc(QAction*)) );
 
+
+}
+
+void MainWindow::AddDb()
+{
+    DialogMy dialog;
+    QTextEdit* text1 = dialog.SetTextQuestion("Введите имя хоста", hostName);
+    QTextEdit* text2 = dialog.SetTextQuestion("Введите имя БД", databaseName);
+    QTextEdit* text3 = dialog.SetTextQuestion("Введите имя пользователя", userName);
+    QTextEdit* text4 = dialog.SetTextQuestion("Введите пароль", password);
+
+    dialog.show();
+    dialog.exec();
+
+    if(dialog.result() == QDialog::Accepted)
+    {
+        if(db.isOpen())
+          db.close();
+
+        db = QSqlDatabase::addDatabase("QPSQL");
+        db.setHostName(text1->toPlainText());
+        db.setDatabaseName(text2->toPlainText());
+        db.setUserName(text3->toPlainText());
+        db.setPassword(text4->toPlainText());
+        bool ok = db.open();
+        qDebug() << ok << endl;
+
+    }
 }
 
 
@@ -120,43 +145,37 @@ void MainWindow::SetRule()
 
     if(db.isOpen())
     {
-        QDialog question;
-        QPushButton okButton,cancelButton;
+        DialogMy dialog;
+        QTextEdit* text1 = dialog.SetTextQuestion("Введите запрос", "select table0.id id1, table1.id id2, table0.ch from table0 join table1 on  table0.ch = table1.ch");
 
-        okButton.setText(tr("OK"));
-        cancelButton.setText(tr("Cancel"));
+        dialog.setMinimumHeight(200);
+        dialog.setMinimumWidth(300);
 
-        QVBoxLayout layout;
+        dialog.show();
+        dialog.exec();
 
-             QHBoxLayout layoutText1;
-             QLabel text1;
-             text1.setText("введите запрос");
-             QTextEdit parametrText;
-             parametrText.setText("select table0.id id1, table1.id id2, table0.ch from table0 join table1 on  table0.ch = table1.ch");
-             parametrText.setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-             layoutText1.addWidget(&text1);
-             layoutText1.addWidget(&parametrText);
 
-         layout.addLayout(&layoutText1);
-         layout.addWidget(&okButton);
-         layout.addWidget(&cancelButton);
-
-         question.setLayout(&layout);
-
-         QObject::connect(&okButton, SIGNAL(clicked()), &question, SLOT(accept()));
-         QObject::connect(&cancelButton, SIGNAL(clicked()), &question, SLOT(reject()));
-         question.setVisible(true);
-         question.show();
-         question.exec();
-
-         if(question.result() == QDialog::Accepted)
-         {
-             query->setQuery(parametrText.toPlainText());
+        if(dialog.result() == QDialog::Accepted)
+        {
+             query->setQuery(text1->toPlainText());
              result->setModel(query);
 
-         }
-       }
+        }
+     }
 
+}
+
+void MainWindow::MenuBarFunc(QAction *act)
+{
+    if (act)
+    {
+        QString txt = act->text();
+
+        if(!txt.compare("Добавить БД"))
+        {      
+            AddDb();
+        }
+    }
 }
 
 MainWindow::~MainWindow()
