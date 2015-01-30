@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>400</width>
-    <height>300</height>
+    <height>304</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -77,7 +77,7 @@
      <x>0</x>
      <y>0</y>
      <width>400</width>
-     <height>26</height>
+     <height>23</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu">
@@ -99,7 +99,7 @@
   <widget class="QStatusBar" name="statusBar"/>
   <action name="action">
    <property name="text">
-    <string>Добавить БД</string>
+    <string>Add Database</string>
    </property>
   </action>
  </widget>

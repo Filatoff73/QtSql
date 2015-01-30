@@ -15,7 +15,9 @@ class MainWindow : public QMainWindow
 
 public:
     explicit MainWindow(QWidget *parent = 0);
+
     ~MainWindow();
+    void AddDb();
 
 private:
     Ui::MainWindow *ui;
@@ -23,6 +25,8 @@ private:
     QTableView* result;
     QSqlQueryModel* query;
     QSqlDatabase db;
+
+    QString     hostName, databaseName, userName, password;
 
 private slots:
 
@@ -32,6 +36,7 @@ void RefreshTable();
 void DeleteRow();
 void AddRow();
 void SetRule();
+void MenuBarFunc(QAction *act);
 
 };
 

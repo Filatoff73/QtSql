@@ -130,11 +130,19 @@ void MainWindow::AddRow()
 {
     if(db.isOpen())
     {
+
+
+
         for(int i=0;i<arr.size();i++)
         {
+            if(arr[i]->getModel()->rowCount(QModelIndex()) == 0)
+                arr[i]->getModel()->insertRow(0, QModelIndex());
+            else
+            {
             int count = arr[i]->selectionModel()->selectedRows().count();
             for(int i1=0;i1<count;i1++)
                 arr[i]->getModel()->insertRow(arr[i]->selectionModel()->selectedRows().at(i1).row()+1, QModelIndex());
+            }
         }
 
     }
@@ -171,7 +179,7 @@ void MainWindow::MenuBarFunc(QAction *act)
     {
         QString txt = act->text();
 
-        if(!txt.compare("Добавить БД"))
+        if(!txt.compare("Add Database"))
         {      
             AddDb();
         }
